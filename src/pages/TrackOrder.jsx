@@ -29,7 +29,24 @@ const [order,setOrder]=useState(null);
 
 useEffect(()=>{
 
+
 fetchOrder();
+
+
+
+const interval=setInterval(()=>{
+
+
+fetchOrder();
+
+
+},5000);
+
+
+
+return ()=>clearInterval(interval);
+
+
 
 },[]);
 
@@ -195,14 +212,21 @@ Delivery before 30 mins
 
 order.status==="PLACED"
 ?
-"Preparing your order"
+"Order received 🍔"
+:
+order.status==="PREPARING"
+?
+"Restaurant preparing 👨‍🍳"
+:
+order.status==="READY_FOR_PICKUP"
+?
+"Waiting for pickup 🛵"
 :
 order.status==="OUT_FOR_DELIVERY"
 ?
 "Arriving soon 🛵"
 :
 "Order Delivered 🎉"
-
 
 }
 
@@ -215,15 +239,25 @@ order.status==="OUT_FOR_DELIVERY"
 
 
 {
+
 order.status==="PLACED"
 ?
-"Restaurant needs few more minutes, partner will pickup soon"
+"Restaurant will accept your order soon"
+:
+order.status==="PREPARING"
+?
+"Your food is being prepared"
+:
+order.status==="READY_FOR_PICKUP"
+?
+"Food ready. Waiting for delivery pickup"
 :
 order.status==="OUT_FOR_DELIVERY"
 ?
 "Your delivery partner is coming"
 :
 "Enjoy your food 🍔"
+
 }
 
 
@@ -271,7 +305,7 @@ order.delivery_partner ?
 
 <p>
 
-🛵 {order.delivery_partner.name}
+🛵 {order.delivery_partner.user.name}
 
 </p>
 
@@ -309,11 +343,6 @@ Searching partner...
 
 
 
-{
-
-order.status==="DELIVERED" ?
-
-
 <div className="progress">
 
 
@@ -323,86 +352,66 @@ Order Journey
 
 
 <div>
-✅ Order Placed
-</div>
-
-
-<div>
-✅ Food Prepared
-</div>
-
-
-<div>
-✅ Out For Delivery
-</div>
-
-
-<div>
-🎉 Delivered
-</div>
-
-
-
-</div>
-
-
+{["PLACED","PREPARING","READY_FOR_PICKUP","OUT_FOR_DELIVERY","DELIVERED"].includes(order.status)
+?
+"✅"
 :
-
-
-<div className="current-status">
-
-
-{
-
-order.status==="PLACED" &&
-
-<div>
-
-<h3>
-👨‍🍳 Restaurant preparing your food
-</h3>
-
-<p>
-Delivery partner will pickup soon
-</p>
-
+"⚪"
+}
+ Order Placed
 </div>
 
-}
-
-
-
-{
-
-
-order.status==="OUT_FOR_DELIVERY" &&
 
 
 <div>
-
-
-<h3>
-🛵 Your order is on the way
-</h3>
-
-
-<p>
-Delivery partner is heading to your location
-</p>
-
-
-
+{["PREPARING","READY_FOR_PICKUP","OUT_FOR_DELIVERY","DELIVERED"].includes(order.status)
+?
+"✅"
+:
+"⚪"
+}
+ Food Preparing
 </div>
 
 
+
+<div>
+{["READY_FOR_PICKUP","OUT_FOR_DELIVERY","DELIVERED"].includes(order.status)
+?
+"✅"
+:
+"⚪"
 }
-
-
-
+ Ready For Pickup
 </div>
 
 
+
+<div>
+{["OUT_FOR_DELIVERY","DELIVERED"].includes(order.status)
+?
+"✅"
+:
+"⚪"
 }
+ Out For Delivery
+</div>
+
+
+
+<div>
+{
+order.status==="DELIVERED"
+?
+"🎉"
+:
+"⚪"
+}
+ Delivered
+</div>
+
+
+</div>
 
 
 

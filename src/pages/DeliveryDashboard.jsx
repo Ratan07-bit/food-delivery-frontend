@@ -12,7 +12,20 @@ const [orders,setOrders] = useState([]);
 
 useEffect(()=>{
 
+
     getOrders();
+
+
+    const interval = setInterval(()=>{
+
+        getOrders();
+
+    },5000);
+
+
+
+    return ()=>clearInterval(interval);
+
 
 },[]);
 

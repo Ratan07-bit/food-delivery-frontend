@@ -6,7 +6,7 @@ import "../App.css";
 function Cart() {
 
   const [items, setItems] = useState([]);
-  const [foods, setFoods] = useState([]);
+  
 
   const [location,setLocation] = useState(
     localStorage.getItem("location") || 
@@ -16,18 +16,9 @@ function Cart() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getFoods();
     getCart();
   }, []);
 
-  const getFoods = async () => {
-    try {
-      const response = await API.get("/foods/all");
-      setFoods(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const getCart = async () => {
     try {
@@ -50,17 +41,47 @@ function Cart() {
     }
   };
 
-  const removeItem = async (foodId) => {
-    try {
-      const item = items.find((c) => c.food_id === foodId);
-      if (item) {
-        await API.delete(`/cart/remove/${item.id}`);
-        getCart();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const removeItem = async (foodId) => {
+
+
+try{
+
+
+const matchingItems = items.filter(
+(c)=>c.food_id === foodId
+);
+
+
+
+if(matchingItems.length > 0){
+
+
+const lastItem = matchingItems[matchingItems.length - 1];
+
+
+await API.delete(
+`/cart/remove/${lastItem.id}`
+);
+
+
+getCart();
+
+
+}
+
+
+}
+
+catch(error){
+
+
+console.log(error);
+
+
+}
+
+
+};
 
   const deleteGroup = async (foodId) => {
     try {
@@ -81,20 +102,8 @@ function Cart() {
   };
 
   // Group cart items by food_id
-  const groupedCart = items.reduce((acc, currentItem) => {
-    const existing = acc.find((item) => item.food_id === currentItem.food_id);
-    if (existing) {
-      existing.quantity += 1;
-      existing.rows.push(currentItem);
-    } else {
-      acc.push({
-        food_id: currentItem.food_id,
-        quantity: 1,
-        rows: [currentItem],
-      });
-    }
-    return acc;
-  }, []);
+// Group cart items by food_id
+const groupedCart = items;
 
   // Map high-quality images from Unsplash to prevent broken links
   const getFoodImage = (name, description) => {
@@ -144,17 +153,17 @@ function Cart() {
   };
 
   // Resolve grouped cart items with complete food details
-  const resolvedItems = groupedCart.map((group) => {
-    const food = foods.find((f) => f.id === group.food_id);
-    return {
-      ...group,
-      foodDetails: food || {
-        name: `Special Dish #${group.food_id}`,
-        price: 250,
-        description: "Freshly prepared house special dish.",
-      },
-    };
-  });
+  const resolvedItems = groupedCart.map((group)=>{
+
+return {
+
+...group,
+
+foodDetails:group.food
+
+};
+
+});
 
   // Computation of Bill details
   const itemsTotal = resolvedItems.reduce((sum, item) => sum + item.foodDetails.price * item.quantity, 0);

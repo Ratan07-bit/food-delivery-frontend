@@ -11,6 +11,7 @@ import RestaurantDashboard from "./pages/RestaurantDashboard";
 import RestaurantLogin from "./pages/RestaurantLogin";
 import DeliveryLogin from "./pages/DeliveryLogin";
 import ProtectedRoute from "./components/ProtectedRoute";
+import RestaurantMenu from "./pages/RestaurantMenu";
 
 function App(){
 
@@ -169,6 +170,22 @@ element={
 path="/restaurant-login"
 
 element={<RestaurantLogin/>}
+
+/>
+
+<Route
+
+path="/restaurant/:id"
+
+element={
+
+<ProtectedRoute role="USER">
+
+<RestaurantMenu/>
+
+</ProtectedRoute>
+
+}
 
 />
 

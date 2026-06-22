@@ -29,7 +29,12 @@ useEffect(()=>{
 
 
 
-const payNow = ()=>{
+const payNow = async()=>{
+
+
+const paymentOrder = await API.post(
+    "/payments/create"
+);
 
 
 const options = {
@@ -37,7 +42,8 @@ const options = {
 
     key:"rzp_test_T2eHeGA2K9A3dJ",
 
-    amount:308 * 100,
+    amount:paymentOrder.data.amount,
+    order_id:paymentOrder.data.razorpay_order_id,
 
     currency:"INR",
 
@@ -51,13 +57,26 @@ const options = {
    handler:async function(response){
 
 
-    console.log(response);
+await API.post(
+
+"/payments/verify",
+
+{
+
+razorpay_order_id:
+response.razorpay_order_id,
 
 
+razorpay_payment_id:
+response.razorpay_payment_id,
 
-    await API.post(
-        "/cart/checkout"
-    );
+
+razorpay_signature:
+response.razorpay_signature
+
+}
+
+);
 
 
 

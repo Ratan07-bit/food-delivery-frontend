@@ -4,12 +4,12 @@
   /* Swiggy Orange */
   --primary-hover: #e57010;
   --primary-light: #fff0e6;
-  --text-main: #282c3f;
-  --text-muted: #686b78;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
   --bg-main: #ffffff;
-  --bg-light: #f8f9fa;
+  --bg-light: #f8fafc;
   --card-bg: #ffffff;
-  --border-color: #e9e9eb;
+  --border-color: #e2e8f0;
   --rating-high: #48c479;
   /* Green for ratings >= 4.0 */
   --rating-mid: #db7c38;
@@ -25,14 +25,14 @@
   --border-radius-lg: 16px;
 
   font-family: var(--font-sans);
-  color-scheme: light dark;
+  color-scheme: light;
   background-color: var(--bg-main);
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: disabled-dark) {
   :root {
     --text-main: #f3f4f6;
     --text-muted: #9ca3af;
@@ -87,7 +87,7 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: disabled-dark) {
   .navbar-wrapper {
     background: rgba(15, 16, 21, 0.8);
   }
@@ -257,7 +257,7 @@ body {
   color: #ff3e3e;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: disabled-dark) {
   .logout-btn:hover {
     background: rgba(255, 62, 62, 0.15);
   }
@@ -591,7 +591,7 @@ body {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: disabled-dark) {
   .add-btn {
     background: #1a1c26;
     border-color: #2b2e3c;
@@ -824,7 +824,7 @@ body {
   background: #fff0f0;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: disabled-dark) {
   .cart-item-remove-icon:hover {
     background: rgba(255, 62, 62, 0.15);
   }
