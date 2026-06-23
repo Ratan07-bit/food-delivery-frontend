@@ -68,7 +68,7 @@ localStorage.setItem(
             if(response.data.role==="USER"){
 
 
-                navigate("/home");
+                navigate("/");
 
 
             }

@@ -21,42 +21,32 @@ function App(){
 
             <Routes>
 
-                <Route 
-                    path="/"
-                    element={<Login/>}
-                />
+               <Route 
+path="/"
+element={<Home/>}
+/>
 
 
-                <Route
+<Route 
+path="/login"
+element={<Login/>}
+/>
+
+
+<Route
 
 path="/home"
 
-element={
-
-<ProtectedRoute role="USER">
-
-<Home/>
-
-</ProtectedRoute>
-
-}
+element={<Home/>}
 
 />
 
 
-                <Route
+<Route
 
 path="/cart"
 
-element={
-
-<ProtectedRoute role="USER">
-
-<Cart/>
-
-</ProtectedRoute>
-
-}
+element={<Cart/>}
 
 />
 
@@ -177,15 +167,7 @@ element={<RestaurantLogin/>}
 
 path="/restaurant/:id"
 
-element={
-
-<ProtectedRoute role="USER">
-
-<RestaurantMenu/>
-
-</ProtectedRoute>
-
-}
+element={<RestaurantMenu/>}
 
 />
 

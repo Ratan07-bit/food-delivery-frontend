@@ -20,47 +20,133 @@ function Cart() {
   }, []);
 
 
-  const getCart = async () => {
-    try {
-      const response = await API.get("/cart/my-cart");
-      setItems(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const getCart = async()=>{
 
-  const addItem = async (foodId) => {
-    try {
-      await API.post("/cart/add", {
-        food_id: foodId,
-        quantity: 1,
-      });
-      getCart();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-const removeItem = async (foodId) => {
+const token =
+localStorage.getItem("token");
 
+
+// guest
+if(!token){
+
+
+const guestCart =
+JSON.parse(
+localStorage.getItem("guestCart")
+) || [];
+
+
+const formatted =
+guestCart.map((item)=>({
+
+id:item.id,
+
+food_id:item.id,
+
+quantity:item.quantity,
+
+food:item
+
+}));
+
+
+setItems(formatted);
+
+
+return;
+
+
+}
+
+
+
+// login user
 
 try{
 
 
-const matchingItems = items.filter(
-(c)=>c.food_id === foodId
+const response =
+await API.get("/cart/my-cart");
+
+
+setItems(response.data);
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+
+};
+
+const addItem = async(foodId)=>{
+
+
+const token =
+localStorage.getItem("token");
+
+
+// guest
+if(!token){
+
+
+let guestCart =
+JSON.parse(
+localStorage.getItem("guestCart")
+) || [];
+
+
+guestCart =
+guestCart.map((item)=>
+
+item.id === foodId
+
+?
+
+{
+...item,
+quantity:item.quantity + 1
+}
+
+:
+
+item
+
 );
 
 
+localStorage.setItem(
+"guestCart",
+JSON.stringify(guestCart)
+);
 
-if(matchingItems.length > 0){
+
+getCart();
 
 
-const lastItem = matchingItems[matchingItems.length - 1];
+return;
 
 
-await API.delete(
-`/cart/remove/${lastItem.id}`
+}
+
+
+
+// logged user
+
+try{
+
+
+await API.post(
+"/cart/add",
+{
+food_id:foodId,
+quantity:1
+}
 );
 
 
@@ -68,6 +154,90 @@ getCart();
 
 
 }
+
+catch(error){
+
+console.log(error);
+
+}
+
+
+};
+
+const removeItem = async (foodId) => {
+
+
+const token =
+localStorage.getItem("token");
+
+
+// GUEST USER
+if(!token){
+
+
+let guestCart =
+JSON.parse(
+localStorage.getItem("guestCart")
+) || [];
+
+
+guestCart =
+guestCart.map((item)=>
+
+item.id === foodId
+
+?
+
+{
+...item,
+quantity:item.quantity - 1
+}
+
+:
+
+item
+
+)
+.filter((item)=>item.quantity > 0);
+
+
+
+localStorage.setItem(
+"guestCart",
+JSON.stringify(guestCart)
+);
+
+
+getCart();
+
+
+return;
+
+
+}
+
+
+
+// LOGIN USER
+try{
+
+
+const item = items.find(
+(c)=>c.food_id === foodId
+);
+
+
+if(!item){
+return;
+}
+
+
+await API.delete(
+`/cart/remove/${item.id}`
+);
+
+
+getCart();
 
 
 }
@@ -218,9 +388,37 @@ foodDetails:group.food
             <button className="nav-link" onClick={() => navigate("/home")}>
               Home
             </button>
-            <button className="logout-btn" onClick={handleLogout}>
-              Logout
-            </button>
+          {
+
+localStorage.getItem("token") ?
+
+<button
+
+className="logout-btn"
+
+onClick={handleLogout}
+
+>
+
+Logout
+
+</button>
+
+:
+
+<button
+
+className="logout-btn"
+
+onClick={()=>navigate("/login")}
+
+>
+
+Sign In
+
+</button>
+
+}
           </div>
         </div>
       </div>
@@ -281,6 +479,43 @@ foodDetails:group.food
             </div>
 
             {/* Right pane - Billing summary details */}
+            {
+!localStorage.getItem("token") && (
+
+<div className="cart-billing-card">
+
+<h3>
+Account
+</h3>
+
+
+<p>
+To place your order now, log in to your existing account or sign up.
+</p>
+
+
+<button
+onClick={()=>navigate("/login")}
+>
+
+LOG IN
+
+</button>
+
+
+<button
+onClick={()=>navigate("/login")}
+>
+
+SIGN UP
+
+</button>
+
+
+</div>
+
+)
+}
             <div className="cart-right-pane">
               <div className="cart-billing-card">
                 <h3 className="billing-title">Bill Details</h3>
@@ -312,9 +547,38 @@ foodDetails:group.food
                 </div>
               </div>
 
-              <button
+             <button
+
 className="checkout-btn"
-onClick={()=>navigate("/payment")}
+
+onClick={()=>{
+
+
+const token =
+localStorage.getItem("token");
+
+
+if(!token){
+
+
+document
+.querySelector(".cart-billing-card")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+
+return;
+
+
+}
+
+
+navigate("/payment");
+
+
+}}
+
 >
 
 Proceed to Checkout →

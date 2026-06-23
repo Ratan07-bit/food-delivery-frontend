@@ -94,20 +94,40 @@ console.log(error);
 
 };
 
-  const getCart = async () => {
-  try {
+const getCart = async()=>{
 
-    const response = await API.get(
-      "/cart/my-cart"
-    );
 
-    setCart(response.data);
+const token = localStorage.getItem("token");
 
-  } catch (error) {
 
-    console.log(error);
+if(!token){
 
-  }
+setCart([]);
+
+return;
+
+}
+
+
+try{
+
+
+const response = await API.get(
+"/cart/my-cart"
+);
+
+
+setCart(response.data);
+
+
+}
+catch(error){
+
+console.log(error);
+
+}
+
+
 };
 
 
@@ -424,14 +444,44 @@ onClick={()=>setShowLocationBox(true)}
           </div>
 
           <div className="nav-right">
-            <button className="cart-btn-nav" onClick={() => navigate("/cart")}>
+<button 
+
+className="cart-btn-nav"
+
+onClick={()=>navigate("/cart")}
+
+>
               <span>🛒</span>
               <span>Cart</span>
               {cart.length > 0 && <span className="cart-badge">{cart.length}</span>}
             </button>
-            <button className="logout-btn" onClick={handleLogout}>
-              Logout
-            </button>
+            {
+localStorage.getItem("token") ?
+
+<button 
+className="logout-btn" 
+onClick={handleLogout}
+>
+
+Logout
+
+</button>
+
+:
+
+<button
+
+className="logout-btn"
+
+onClick={()=>navigate("/login")}
+
+>
+
+Login
+
+</button>
+
+}
           </div>
         </div>
       </div>

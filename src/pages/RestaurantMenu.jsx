@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { 
+useParams,
+useNavigate 
+} from "react-router-dom";
 import API from "../api/axios";
 import "./RestaurantMenu.css"; // Added CSS import
 
@@ -7,6 +10,7 @@ function RestaurantMenu() {
   const { id } = useParams();
   const [foods, setFoods] = useState([]);
   const [cart, setCart] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getFoods();
@@ -22,58 +26,273 @@ function RestaurantMenu() {
     }
   };
 
-  const getCart = async () => {
-    try {
-      const res = await API.get("/cart/my-cart");
-      setCart(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const getCart = async()=>{
 
-  const addCart = async (foodId) => {
-    try {
-      await API.post("/cart/add", {
-        food_id: foodId,
-        quantity: 1,
-      });
-      getCart();
-    } catch (error) {
-      console.log(error.response);
-      alert(error.response?.data?.detail || "Add cart failed");
-    }
-  };
 
-  const removeCart = async (foodId) => {
-    try {
-      const item = cart.find((c) => c.food_id === foodId);
-      if (!item) {
-        return;
-      }
-      await API.delete(`/cart/remove/${item.id}`);
+const token = localStorage.getItem("token");
 
-      // instantly update frontend also
-      setCart((prev) =>
-        prev
-          .map((c) =>
-            c.id === item.id
-              ? {
-                  ...c,
-                  quantity: c.quantity - 1,
-                }
-              : c
-          )
-          .filter((c) => c.quantity > 0)
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-  const getQuantity = (foodId) => {
-    const item = cart.find((c) => c.food_id === foodId);
-    return item ? item.quantity : 0;
-  };
+if(!token){
+
+
+const guestCart =
+JSON.parse(
+localStorage.getItem("guestCart")
+) || [];
+
+
+setCart(guestCart);
+
+
+return;
+
+
+}
+
+
+
+try{
+
+
+const res = await API.get(
+"/cart/my-cart"
+);
+
+
+setCart(res.data);
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+
+};
+
+const addCart = async(foodId)=>{
+
+
+const token = localStorage.getItem("token");
+
+
+// USER LOGIN CART
+if(token){
+
+
+try{
+
+
+await API.post(
+"/cart/add",
+{
+food_id:foodId,
+quantity:1
+}
+);
+
+
+getCart();
+
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+
+}
+
+
+// GUEST CART
+else{
+
+
+const food = foods.find(
+(f)=>f.id === foodId
+);
+
+
+
+let guestCart =
+JSON.parse(
+localStorage.getItem("guestCart")
+) || [];
+
+
+
+const existing =
+guestCart.find(
+(item)=>item.id===foodId
+);
+
+
+
+if(existing){
+
+
+existing.quantity += 1;
+
+
+}
+
+else{
+
+
+guestCart.push({
+
+...food,
+
+quantity:1
+
+});
+
+
+}
+
+
+
+localStorage.setItem(
+"guestCart",
+JSON.stringify(guestCart)
+);
+
+
+
+setCart(guestCart);
+
+
+}
+
+
+};
+
+const removeCart = async(foodId)=>{
+
+
+const token =
+localStorage.getItem("token");
+
+
+// ======================
+// GUEST USER CART
+// ======================
+if(!token){
+
+
+let guestCart =
+JSON.parse(
+localStorage.getItem("guestCart")
+) || [];
+
+
+
+guestCart =
+guestCart.map((item)=>
+
+
+item.id === foodId
+
+?
+
+{
+...item,
+quantity:item.quantity - 1
+}
+
+:
+
+item
+
+
+)
+.filter((item)=>item.quantity > 0);
+
+
+
+localStorage.setItem(
+"guestCart",
+JSON.stringify(guestCart)
+);
+
+
+
+setCart(guestCart);
+
+
+
+return;
+
+
+}
+
+
+
+// ======================
+// LOGIN USER CART
+// ======================
+
+
+try{
+
+
+const item = cart.find(
+(c)=>c.food_id === foodId
+);
+
+
+
+if(!item){
+
+return;
+
+}
+
+
+
+await API.delete(
+`/cart/remove/${item.id}`
+);
+
+
+
+getCart();
+
+
+
+}
+
+catch(error){
+
+
+console.log(error);
+
+
+}
+
+
+};
+
+  const getQuantity=(foodId)=>{
+
+
+const item = cart.find(
+(c)=>
+c.food_id === foodId ||
+c.id === foodId
+);
+
+
+return item ? item.quantity : 0;
+
+
+};
 
   return (
     <div className="restaurant-menu-page">
