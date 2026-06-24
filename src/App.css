@@ -774,3 +774,51 @@ gap:20px;
 align-items:center;
 
 }
+
+
+.map-icon{
+
+color:#6b6b6b;
+
+stroke-width:2.5;
+
+flex-shrink:0;
+
+}
+
+
+/* navbar location */
+.location-picker{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+}
+
+
+/* suggestion location row */
+.place-row{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+}
+
+
+/* restaurant location */
+.food-desc{
+
+display:flex;
+
+align-items:center;
+
+gap:6px;
+
+}
+

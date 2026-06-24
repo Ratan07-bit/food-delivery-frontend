@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import "../App.css";
 import usePlacesAutocomplete from "use-places-autocomplete";
+import { MapPin } from "lucide-react";
+
 
 function Home() {
   const [restaurants,setRestaurants] = useState([]);
@@ -349,7 +351,18 @@ setShowLocationBox(false);
 
 >
 
-📍 {place.description}
+<div className="place-row">
+
+<MapPin 
+size={20}
+className="map-icon"
+/>
+
+<span>
+{place.description}
+</span>
+
+</div>
 
 </div>
 
@@ -414,18 +427,21 @@ Cancel
               <span>FoodExpress</span>
               <span>🍔</span>
             </div>
-            <div 
+          <div 
 className="location-picker"
 onClick={()=>setShowLocationBox(true)}
 >
 
-    <span>📍</span>
+<MapPin 
+className="map-icon"
+size={22}
+/>
 
-    <span className="city">
-        {location}
-    </span>
+<span className="city">
+{location}
+</span>
 
-    <span> ▾</span>
+<span> ▾</span>
 
 </div>
           </div>
@@ -647,7 +663,12 @@ className="food-image"
 
 <p className="food-desc">
 
-📍 {restaurant.location}
+<MapPin 
+size={18}
+className="map-icon"
+/>
+
+{restaurant.location}
 
 </p>
 

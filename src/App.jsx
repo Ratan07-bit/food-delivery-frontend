@@ -12,6 +12,7 @@ import RestaurantLogin from "./pages/RestaurantLogin";
 import DeliveryLogin from "./pages/DeliveryLogin";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RestaurantMenu from "./pages/RestaurantMenu";
+import Landing from "./pages/Landing";
 
 function App(){
 
@@ -23,7 +24,7 @@ function App(){
 
                <Route 
 path="/"
-element={<Home/>}
+element={<Landing/>}
 />
 
 
